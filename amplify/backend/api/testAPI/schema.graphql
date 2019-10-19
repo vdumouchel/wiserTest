@@ -1,0 +1,21 @@
+type Host @model {
+  id: ID!
+  name: String!
+  conferences: [Conference] @connection(name: "HostConferences")
+}
+type Conference @model {
+  id: ID!
+  title: String!
+  topic: String
+  poster:String
+  keynote_quantity: String
+  price: String
+  likes: Int
+  host: Host @connection(name: "HostConferences")
+  video: Video @connection(name: "ConferenceVideos")
+}
+type Video @model {
+  id: ID!
+  src: String
+  conference: Conference @connection(name: "ConferenceVideos")
+}
