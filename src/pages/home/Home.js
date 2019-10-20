@@ -17,6 +17,7 @@ function Home() {
   let history = useHistory()
   const [hosts, updateHosts] = useState([])
   const [conferences, updateConferences] = useState([])
+  const [id, updateID] = useState([])
 
   useEffect(() => {
     getHosts()
@@ -38,15 +39,15 @@ function Home() {
       const conferenceData = await API.graphql(
         graphqlOperation(ListConferences)
       )
-      console.log("conferenceData: ", conferenceData)
+      console.log("conferenceData: ", conferenceData.data.listConferences.items)
       updateConferences(conferenceData.data.listConferences.items)
+      const mapped = conferenceData.data.listConferences.items
+      const mapped2 = await mapped.map(a => a.id)
+      console.log("mapped2:...", mapped2[0])
+      updateID(mapped2[0])
     } catch (err) {
       console.log("error fetching conference data from api...", err)
     }
-  }
-
-  function handleClick() {
-    history.push("/app")
   }
 
   return (
@@ -56,7 +57,15 @@ function Home() {
       <div>
         {conferences.map((conference, index) => (
           <div key={index}>
-            <Box width={256} onClick={handleClick}>
+            <Box
+              width={256}
+              onClick={() =>
+                history.push({
+                  pathname: "/video",
+                  state: { conferenceID: conference.id }
+                })
+              }
+            >
               <Card
                 sx={{
                   p: 1,
